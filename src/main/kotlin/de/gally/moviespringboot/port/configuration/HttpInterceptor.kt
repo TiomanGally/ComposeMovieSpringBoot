@@ -21,16 +21,19 @@ class HttpInterceptor : WebFilter {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        val request: ServerHttpRequest = exchange.request
+        with(exchange.request) {
+            val queryParams = queryParams().ifEmpty { "" }
+            val appHeaders = appHeaders().ifEmpty { "" }
 
-        val queryParams = request.queryParams().ifEmpty { "" }
-        val appHeaders = request.appHeaders().ifEmpty { "" }
-        val httpMethod = request.methodValue
-        val path = request.path
+            log.info("${trackingId()} Request => [$methodValue] $path$queryParams - $appHeaders")
+        }
 
-        log.info("${request.trackingId()} Request => [$httpMethod] $path$queryParams - $appHeaders")
-
-
+        with(exchange.response) {
+            val trackingId = MDC.get(TRACKING_ID)
+            
+            log.info("$trackingId Response => [$statusCode]")
+        }
+        
         return chain.filter(exchange)
     }
 
