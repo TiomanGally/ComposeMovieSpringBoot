@@ -1,17 +1,20 @@
 package de.gally.moviespringboot.adapter
 
+import de.gally.moviespringboot.domain.ClientException
+import de.gally.moviespringboot.domain.InternalException
 import de.gally.moviespringboot.domain.Movie
 import de.gally.moviespringboot.domain.MovieServices
-import org.slf4j.LoggerFactory
+import de.gally.moviespringboot.getLogger
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import org.springframework.web.reactive.function.client.awaitBody
 
 @Service
 class OmdbHttpWebClient(
-    private val properties: OmdbProperties
+    private val properties: OmdbProperties,
 ) : MovieServices {
 
     private val webClient: WebClient by lazy {
@@ -21,7 +24,7 @@ class OmdbHttpWebClient(
     }
 
     override suspend fun fetchMovieByTitle(title: String): Movie {
-        return webClient
+        val request = webClient
             .get()
             .uri {
                 it
@@ -30,7 +33,27 @@ class OmdbHttpWebClient(
                     .build()
             }
             .retrieve()
-            .awaitBody()
+
+        return handleRequestGracefully { request.awaitBody() }
+    }
+
+    private suspend fun <T> handleRequestGracefully(request: suspend () -> T): T {
+        return runCatching { request() }
+            .onFailure {
+                when (it) {
+                    is WebClientResponseException -> {
+                        val body = it.responseBodyAsString
+                        val requestUri = it.request?.uri
+                        val requestMethod = it.request?.methodValue
+
+                        throw ClientException(
+                            "Requested Uri [$requestMethod $requestUri] with body [$body]",
+                            it.statusCode
+                        )
+                    }
+                    else -> throw InternalException("Unhandled Exception was thrown in OmdbHttpWebClient: $it")
+                }
+            }.getOrThrow()
     }
 }
 
@@ -41,6 +64,6 @@ data class OmdbProperties(
     val apiKey: String
 ) {
     init {
-        LoggerFactory.getLogger(this::class.java).info("The properties have following values: $baseUrl and $apiKey")
+        getLogger<OmdbProperties>().info("Omdb Api-Key: [$apiKey]")
     }
 }

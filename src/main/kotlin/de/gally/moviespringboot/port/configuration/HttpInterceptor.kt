@@ -1,5 +1,6 @@
 package de.gally.moviespringboot.port.configuration
 
+import de.gally.moviespringboot.port.configuration.AppHeader.TRACKING_ID
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
@@ -11,12 +12,13 @@ import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
 
+object AppHeader {
+    const val TRACKING_ID: String = "X-TrackingId"
+}
+
 @Configuration
 class HttpInterceptor : WebFilter {
 
-    private companion object {
-        const val TRACKING_ID: String = "X-TrackingId"
-    }
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
