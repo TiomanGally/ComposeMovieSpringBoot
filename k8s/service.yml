@@ -1,0 +1,16 @@
+---
+# Service - for combining multiple pods behind one service
+apiVersion: v1
+kind: Service
+metadata:
+  name: movie-service
+  namespace: test
+spec:
+  selector:
+    app: movie
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---

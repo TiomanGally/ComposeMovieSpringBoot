@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  run-maven-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,4 +37,4 @@ jobs:
         with:
           context: /home/runner/work/ComposeMovieSpringBoot/ComposeMovieSpringBoot
           push: true
-          tags: milchkarton/compose:movie-${{ github.run_number }}
+          tags: milchkarton/compose:movie-v${{ github.run_number }}
