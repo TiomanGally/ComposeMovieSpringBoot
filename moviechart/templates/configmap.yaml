@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-configmap
+  name: {{ .Values.general.name }}-configmap
+  namespace: {{ .Release.Name }}
 data:
-  myValue: "Hello World"
-  drink: {{ .Values.favorite.drink | repeat 5 | quote }}
-  food: {{ .Values.favorite.food | upper | quote }}
+  SPRING_APPLICATION_NAME: {{ .Values.general.name | quote }}
+

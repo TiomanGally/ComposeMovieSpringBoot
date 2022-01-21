@@ -1,0 +1,3 @@
+Thank you for installing {{ .Values.general.name }} in your stage {{ .Release.Name }}
+
+Feel free to contact me via github: https://github.com/TiomanGally

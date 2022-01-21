@@ -1,15 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: movie
-  namespace: test
+  name: {{ .Values.general.name }}
+  namespace: {{ .Release.Name }}
   labels:
-    app: movie
+    app: {{ .Values.general.name }}
 spec:
+  {{ if eq .Release.Name "prod" }}
+  replicas: 2
+  {{ else }}
   replicas: 1
+  {{ end }}
   selector:
     matchLabels:
-      app: movie
+      app: {{ .Values.general.name }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,17 +22,17 @@ spec:
   template:
     metadata:
       labels:
-        app: movie
+        app: {{ .Values.general.name }}
     spec:
       containers:
         - image: milchkarton/compose:latest
           imagePullPolicy: Always
-          name: movie
+          name: {{ .Values.general.name }}
           ports:
             - containerPort: 8080
               protocol: TCP
           envFrom:
             - secretRef:
-                name: omdb-api-key-secret
+                name: {{ .Values.general.name }}-secrets
             - configMapRef:
-                name: movie-configmap
+                name: {{ .Values.general.name }}-configmap

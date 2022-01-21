@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: movie-configmap
-  namespace: test
-data:
-  SPRING_APPLICATION_NAME: "Movie"
-  SERVER_PORT: "8080"
