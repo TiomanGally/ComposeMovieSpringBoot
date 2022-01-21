@@ -6,7 +6,7 @@ metadata:
   labels:
     app: movie
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: movie
@@ -21,9 +21,9 @@ spec:
         app: movie
     spec:
       containers:
-        - image: milchkarton/compose:movie-v23
-          imagePullPolicy: IfNotPresent
-          name: movie-v18
+        - image: milchkarton/compose:latest
+          imagePullPolicy: Always
+          name: movie
           ports:
             - containerPort: 8080
               protocol: TCP
