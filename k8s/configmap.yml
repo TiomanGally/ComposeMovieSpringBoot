@@ -4,4 +4,5 @@ metadata:
   name: movie-configmap
   namespace: test
 data:
-  SPRING_APPLICATION_NAME: Movie
+  SPRING_APPLICATION_NAME: "Movie"
+  SERVER_PORT: "8080"
