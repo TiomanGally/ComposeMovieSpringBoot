@@ -3,5 +3,4 @@ general:
   name: movie
 
 omdb:
-  apikey: ${}
-
+  apikey:

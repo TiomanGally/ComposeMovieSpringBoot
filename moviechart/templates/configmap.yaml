@@ -5,4 +5,5 @@ metadata:
   namespace: {{ .Release.Name }}
 data:
   SPRING_APPLICATION_NAME: {{ .Values.general.name | quote }}
+  SERVER_PORT: "12345"
 
