@@ -12,4 +12,4 @@ jobs:
 
     steps:
       - name: say hello
-        run: echo hello
+        run: echo hello from 1.12
